@@ -200,8 +200,29 @@ CRp.drawEdgePath = function( edge, context, pts, type ){
       case 'self':
       case 'compound':
       case 'multibezier':
-        for( let i = 2; i + 3 < pts.length; i += 4 ){
-          context.quadraticCurveTo( pts[ i ], pts[ i + 1], pts[ i + 2], pts[ i + 3] );
+        // Drew Banin - dbt docs
+        // Draw lines horizontally or vertically into and out of nodes
+        if (edge.hasClass('horizontal')) {
+            let terminal_x = pts[4];
+            let terminal_y = pts[5];
+            let midpoint_x = (pts[0] + pts[4]) / 2;
+
+            let hack_perpendicular_line_width = 10;
+            context.lineTo(pts[0] + hack_perpendicular_line_width, pts[1]);
+            context.bezierCurveTo(midpoint_x, pts[1], midpoint_x, pts[5], pts[4] - hack_perpendicular_line_width, pts[5]);
+            context.lineTo(terminal_x, terminal_y);
+        } else if (edge.hasClass('vertical')) {
+            let terminal_x = pts[4];
+            let terminal_y = pts[5];
+            let midpoint_y = (pts[1] + pts[5]) / 2;
+
+            let hack_perpendicular_line_height = 10;
+            context.bezierCurveTo(pts[0], midpoint_y, pts[4], midpoint_y, pts[4], pts[5] - hack_perpendicular_line_height);
+            context.lineTo(terminal_x, terminal_y);
+        } else {
+            for (let i = 2; i + 3 < pts.length; i += 4) {
+              context.quadraticCurveTo(pts[i], pts[i + 1], pts[i + 2], pts[i + 3]);
+            }
         }
         break;
 
@@ -264,7 +285,17 @@ CRp.drawArrowheads = function( context, edge, opacity ){
   this.drawArrowhead( context, edge, 'mid-source', rs.midX, rs.midY, rs.midsrcArrowAngle, opacity );
 
   if( !isHaystack ){
-    this.drawArrowhead( context, edge, 'target', rs.arrowEndX, rs.arrowEndY, rs.tgtArrowAngle, opacity );
+    // Drew Banin - dbt docs
+    // Make horizontal arrows strictly left-to-right or top-to-bottom
+    // Do not try to calculate the arrow angle by the line connecting the two nodes
+    // Our cubic bezier curve intersects nodes strictly perpendicularly
+    if (edge.hasClass('horizontal')) {
+        this.drawArrowhead(context, edge, 'target', rs.arrowEndX, rs.arrowEndY, -Math.PI / 2, opacity);
+    } else if (edge.hasClass('vertical')) {
+        this.drawArrowhead(context, edge, 'target', rs.arrowEndX, rs.arrowEndY, 0, opacity);
+    } else {
+        this.drawArrowhead(context, edge, 'target', rs.arrowEndX, rs.arrowEndY, rs.tgtArrowAngle, opacity);
+    }
   }
 };
 
