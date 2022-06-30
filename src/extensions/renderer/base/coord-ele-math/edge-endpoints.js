@@ -191,11 +191,26 @@ BRp.findEndpoints = function( edge ){
     r.arrowShapes[ tgtArShape ].gap( edge ) + tgtDist
   );
 
-  rs.endX = edgeEnd[0];
-  rs.endY = edgeEnd[1];
-
-  rs.arrowEndX = arrowEnd[0];
-  rs.arrowEndY = arrowEnd[1];
+  // Drew Banin - dbt docs
+  // Make horizontal edges use exactly the terminal node x and y pos
+  // so that multiple edges into the same node all exactly overlap.
+  // Without this adjustments, the arrows partially overlap and lose their definition
+  if (edge.hasClass('horizontal')) {
+      rs.endX = intersect[0] - tgtDist;
+      rs.endY = intersect[1];
+      rs.arrowEndX = intersect[0] - tgtDist / 2;
+      rs.arrowEndY = intersect[1];
+  } else if (edge.hasClass('vertical')) {
+      rs.endX = intersect[0];
+      rs.endY = intersect[1] - tgtDist;
+      rs.arrowEndX = intersect[0];
+      rs.arrowEndY = intersect[1] - tgtDist / 2;
+  } else {
+      rs.endX = edgeEnd[0];
+      rs.endY = edgeEnd[1];
+      rs.arrowEndX = arrowEnd[0];
+      rs.arrowEndY = arrowEnd[1];
+  }
 
   if( srcManEndptVal === 'inside-to-node' ){
     intersect = [ srcPos.x, srcPos.y ];
