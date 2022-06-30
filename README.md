@@ -1,3 +1,5 @@
+_dbt Labs maintains our own fork of this project for use in [`dbt-docs`](https://github.com/dbt-labs/dbt-docs) for cubic bezier edges._
+
 <img style="width: 200px; height: 200px;" src="https://raw.githubusercontent.com/cytoscape/cytoscape.js/unstable/documentation/img/cytoscape-logo.png" width="200" height="200"></img>
 
 [![GitHub repo](https://img.shields.io/badge/Repo-GitHub-yellow.svg)](https://github.com/cytoscape/cytoscape.js)
@@ -19,6 +21,7 @@
 # Cytoscape.js
 
 Graph theory (network) library for visualisation and analysis : [https://js.cytoscape.org](https://js.cytoscape.org)
+
 
 ## Description
 
